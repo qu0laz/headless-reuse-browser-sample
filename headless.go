@@ -36,6 +36,18 @@ type Connections struct {
 	TabNum      int
 	TimeOut     int
 }
+func GenContext(opts []chromedp.ExecAllocatorOption) (context.Context, context.CancelFunc) {
+	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	ctx, cancel = chromedp.NewContext(ctx)
+	err := chromedp.Run(ctx)
+	if err != nil {
+		fmt.Println("TOP CONTEXT")
+		fmt.Println("CONTEXT ERROR", err)
+	}
+	return ctx, cancel
+}
+
+
 //CheckDB accepts the standard options, and operates a top level context, however it loops until all URLS are found
 // based on the initial seed URLS.
 //If a seed is a nested link "https://x.com/aboutus", it will parse upwards as well.
