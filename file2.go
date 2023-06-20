@@ -29,13 +29,7 @@ import (
 	"sync"
 	"time"
 )
-type Connections struct {
-	Ctx         context.Context
-	Nsqp        *nsq.Producer
-	MongoClient *mongo.Client
-	TabNum      int
-	TimeOut     int
-}
+
 func GenContext(opts []chromedp.ExecAllocatorOption) (context.Context, context.CancelFunc) {
 	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 	ctx, cancel = chromedp.NewContext(ctx)
@@ -376,4 +370,59 @@ func Default(URL string, seedurl string, tabContext workerhandler.Connections, t
 	fmt.Printf("body is %v kb \n", len(str)/1000)
 	fmt.Println("URL", URL, " DURATION", duration)
 
+}
+
+
+type Worker struct {
+	Command   `json:"Command"`
+	Worker    string            `json:"Worker"`
+	Urls      []string          `json:"URLs"`
+	SeedURLs  map[string]string `json:"seedurls,omitempty"`
+	Params    `json:"Params"`
+	Outputs   `json:"Outputs"`
+	Endpoints `json:"Endpoints"`
+}
+type Command struct {
+	Cmd string `json:"Cmd"`
+}
+type Params struct {
+	Headless string `json:"headless,omitempty"`
+	Speed    string `json:"speed,omitempty"`
+	GetHTML  string `json:"gethtml,omitempty"`
+}
+type Outputs struct {
+	Mongodbname string `json:"mongodbname,omitempty"`
+	Elasticname string `json:"elasticname,omitempty"`
+}
+
+type TabContent struct {
+	Command `json:"Command"`
+	Params  `json:"Params"`
+	Outputs `json:"Outputs"`
+}
+type Connections struct {
+	Ctx         context.Context
+	Nsqp        *nsq.Producer
+	MongoClient *mongo.Client
+	TabNum      int
+	TimeOut     int
+}
+type URLSeedChan struct {
+	URL     string
+	SeedURL string
+}
+type Endpoints struct {
+	MongodbLocation  string `json:"mongodblocation,omitempty"`
+	ElasticLocation  string `json:"elasticlocation,omitempty"`
+	PostgresLocation string `json:"postgreslocation,omitempty"`
+}
+type EndpointOptions struct {
+	URL         string
+	I           int
+	Wg          *sync.WaitGroup
+	Regexes     *regexp.Regexp
+	P           *nsq.Producer
+	Elasticname string
+	Mongodbname string
+	Space       *regexp.Regexp
 }
