@@ -29,7 +29,13 @@ import (
 	"sync"
 	"time"
 )
-
+type Connections struct {
+	Ctx         context.Context
+	Nsqp        *nsq.Producer
+	MongoClient *mongo.Client
+	TabNum      int
+	TimeOut     int
+}
 //CheckDB accepts the standard options, and operates a top level context, however it loops until all URLS are found
 // based on the initial seed URLS.
 //If a seed is a nested link "https://x.com/aboutus", it will parse upwards as well.
