@@ -101,7 +101,7 @@ func CheckDB(w workerhandler.Worker, connections workerhandler.Connections, opts
 //BrowserSplit Creates Parent Browser context for pushing work and connections into
 func BrowserSplit(dbURLs []string, w workerhandler.Worker, connections workerhandler.Connections, opts []chromedp.ExecAllocatorOption) bool {
 
-	browserCount := 1
+	browserCount := 1 // @@@ this sets the number of browsers to use
 	ss := utility.SliceToSliceSlice(dbURLs, browserCount)
 
 	var wg sync.WaitGroup
